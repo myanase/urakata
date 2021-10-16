@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\ClassBController;
 
 class ClassAController extends Controller
 {
-    private $ClassBController;
 
     //依存解決学習用
     //インスタンス作成
