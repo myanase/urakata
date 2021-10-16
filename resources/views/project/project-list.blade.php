@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-    <h1>プロジェクト一覧 {{$a}} </h1>
+    <h1>プロジェクト一覧</h1>
         <a href="{{ route('create-project') }}"><input type="button" value="登録"></a>
     </x-slot>
     @section('contents')
