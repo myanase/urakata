@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Http\Controllers\ClassAController;
+use App\Http\Controllers\ClassXController;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
@@ -17,6 +18,13 @@ class ProjectController extends Controller
     ){
         $this->project = app()->make(Project::class);
         $classA = app()->make(ClassAController::class);
+        app()->bind(ClassXController::class, function () {
+            $classX = new ClassXController();
+            $classX->foo = 'bar';
+            return $classX;
+        });
+        $classX = app()->make(ClassXController::class);
+        \Log::info($classX->foo);
     }
 
     //プロジェクト一覧
