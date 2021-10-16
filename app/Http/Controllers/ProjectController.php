@@ -8,14 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
+    //インスタンス作成
+    public function __construct(){
+        $this->project = app()->make(Project::class);
+    }
+
     //プロジェクト一覧
     public function index(Request $request){
         // 現在ログインしているユーザーのID取得
         $user_id = Auth::id();
 
-        $projects = new Project;
+        //$projects = new Project;
         //ログイン中ユーザーに紐づく未削除のプロジェクトを取得
-        $projects = Project::select('project_no','project_name', 'color')->where('user_id', $user_id)->where('del_flg', '0')->get();
+        $projects = $this->project::select('project_no','project_name', 'color')->where('user_id', $user_id)->where('del_flg', '0')->get();
         return view('project.project-list', ['projects' => $projects]);
     }
 
@@ -25,15 +30,14 @@ class ProjectController extends Controller
         $user_id = Auth::id();
 
         //フォームからの入力値を取得
-        $project = new Project;
-        $project->project_name = $request-> project_name;
-        $project->user_id = $user_id;
-        $project->genre = $request-> genre;
-        $project->nendai = $request-> nendai;
-        $project->memo = $request-> memo;
-        $project->color = $request-> color;
-        $project->series = $request-> series;
-        $project->save();
+        $this->project->project_name = $request-> project_name;
+        $this->project->user_id = $user_id;
+        $this->project->genre = $request-> genre;
+        $this->project->nendai = $request-> nendai;
+        $this->project->memo = $request-> memo;
+        $this->project->color = $request-> color;
+        $this->project->series = $request-> series;
+        $this->project->save();
         
         return redirect('/project-list')->with('message', '登録が完了しました。');
     }
@@ -41,31 +45,28 @@ class ProjectController extends Controller
     //プロジェクト編集情報取得
     public function edit($project_no){
         //編集対象プロジェクト情報取得
-        $project = new Project;
-        $project = Project::select('project_no','project_name','genre','nendai','memo','color','series')->where('project_no', $project_no)->get();
+        $project = $this->project::select('project_no','project_name','genre','nendai','memo','color','series')->where('project_no', $project_no)->get();
         return view('project.edit-project', ['project' => $project]);
     }
 
     //プロジェクト更新
     public function update(Request $request,$project_no){
         //フォームからの入力値を取得
-        $project = new Project;
-        $project = Project::find($project_no);
-        $project->project_name = $request-> input('project_name');
-        $project->genre = $request-> input('genre');
-        $project->nendai = $request-> input('nendai');
-        $project->memo = $request-> input('memo');
-        $project->color = $request-> input('color');
-        $project->series = $request-> input('series');
-        $project->save();
+        $this->project = Project::find($project_no);
+        $this->project->project_name = $request-> input('project_name');
+        $this->project->genre = $request-> input('genre');
+        $this->project->nendai = $request-> input('nendai');
+        $this->project->memo = $request-> input('memo');
+        $this->project->color = $request-> input('color');
+        $this->project->series = $request-> input('series');
+        $this->project->save();
         
         return redirect('/project-list')->with('message', '更新が完了しました。');
     }
 
     //プロジェクト削除(論理削除)
     public function delate($project_no){
-        $project = new Project;
-        $project = Project::find($project_no);
+        $project = $this->project::find($project_no);
         $project->del_flg = 1;
         $project->save();
         
