@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Http\Controllers\ClassAController;
 use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
+    private $ClassAController;
+
     //インスタンス作成
-    public function __construct(){
+    public function __construct(
+        ClassAController $ClassAController
+    ){
         $this->project = app()->make(Project::class);
+        $classA = app()->make(ClassAController::class);
     }
 
     //プロジェクト一覧
     public function index(Request $request){
         // 現在ログインしているユーザーのID取得
         $user_id = Auth::id();
+        //$user_id = $this->user_id;
 
-        //$projects = new Project;
         //ログイン中ユーザーに紐づく未削除のプロジェクトを取得
         $projects = $this->project::select('project_no','project_name', 'color')->where('user_id', $user_id)->where('del_flg', '0')->get();
         return view('project.project-list', ['projects' => $projects]);
